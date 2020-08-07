@@ -17,28 +17,30 @@ from chi_squared import chi2_test
 from f_values import f_values
 from vif import variance_inflation_factor
 from dt_classifier import DT
-
+import sys
 #train and test sets are divided in 70-30 ratio
-frame=pd.read_csv('Balanced.csv')
+# frame=pd.read_csv('Balanced.csv')
 # print(frame.columns)
 train_set=pd.read_csv('train.csv')
 test_set=pd.read_csv('test.csv')
+
 train_set.drop('Unnamed: 0',axis=1,inplace=True)
 test_set.drop('Unnamed: 0',axis=1,inplace=True)
-drop_col=['Hashtags_score_avg', 'Mentions_score_avg']
-test_set.drop(drop_col,axis=1,inplace=True)
+# drop_col=['Hashtags_score_avg', 'Mentions_score_avg']
+# test_set.drop(drop_col,axis=1,inplace=True)
+print(train_set.columns)
+print(test_set.columns)
 
-# There are 2 object features Mentions and Hashtags which specifically need label encoding.
-columns = train_set.columns
-for i in columns:
-    train_set[i] = LabelEncoder().fit_transform(train_set[i])
-    test_set[i] = LabelEncoder().fit_transform(test_set[i])
+
+#     train_set[i] = LabelEncoder().fit_transform(train_set[i])
+#     test_set[i] = LabelEncoder().fit_transform(test_set[i])
 
 
 # Feature Selection
 # chi-square scores and p-values.
 def chi_square():
-    chi_scores,p_values=chi2_test(train_set,'bin')
+    x_train=train_set.drop('Neg',axis=1)
+    chi_scores,p_values=chi2_test(x_train,'bin')
     chi_scores.plot.bar()
     plt.title('Chi-Square')
     plt.show()
