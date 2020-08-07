@@ -18,22 +18,15 @@ from f_values import f_values
 from vif import variance_inflation_factor
 from dt_classifier import DT
 import sys
-#train and test sets are divided in 70-30 ratio
-# frame=pd.read_csv('Balanced.csv')
-# print(frame.columns)
+
 train_set=pd.read_csv('train.csv')
 test_set=pd.read_csv('test.csv')
 
-train_set.drop('Unnamed: 0',axis=1,inplace=True)
-test_set.drop('Unnamed: 0',axis=1,inplace=True)
-# drop_col=['Hashtags_score_avg', 'Mentions_score_avg']
-# test_set.drop(drop_col,axis=1,inplace=True)
+train_set.drop(['Unnamed: 0.1','Unnamed: 0'],axis=1,inplace=True)
+test_set.drop(['Unnamed: 0.1','Unnamed: 0'],axis=1,inplace=True)
+
 print(train_set.columns)
 print(test_set.columns)
-
-
-#     train_set[i] = LabelEncoder().fit_transform(train_set[i])
-#     test_set[i] = LabelEncoder().fit_transform(test_set[i])
 
 
 # Feature Selection
@@ -50,7 +43,8 @@ def chi_square():
 
 #SelectKbest features based on f-values.
 def select_k_best():
-    f_score,k_best_columns,selected_col=f_values(train_set,4,'bin')
+    f_score,k_best_columns,selected_col=f_values(train_set,5,'bin')
+    print(selected_col)
     return k_best_columns
 
 def decision_tree():
@@ -73,5 +67,5 @@ def decision_tree():
 
 
 
-chi_square()
+# chi_square()
 decision_tree()
