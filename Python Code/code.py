@@ -51,8 +51,8 @@ def chi_square():
     plt.show()
 
 #SelectKbest features based on f-values.
-def select_k_best():
-    f_score,k_best_columns,selected_col=f_values(train_set,12,'bin')
+def select_k_best(n_features):
+    f_score,k_best_columns,selected_col=f_values(train_set,n_features,'bin')
     print(selected_col,len(selected_col))
     return k_best_columns
 
@@ -67,7 +67,7 @@ def classification_compare():
     x_test=test_set.drop('bin',axis=1)
     y_test=test_set['bin']
 
-    cols = select_k_best()
+    cols = select_k_best(12)
     X = train_set.drop('bin', axis=1)
     Y = test_set.drop('bin', axis=1)
     x_train_s = X.iloc[:, cols]
@@ -119,6 +119,8 @@ def classification_compare():
     bars = ('RF', 'RF_k', 'KNN', 'KNN_k', 'NaiveBayes', 'NaiveBayes_k', 'GB', 'GB_k', 'MLP', 'MLP_k')
     height = [a21.round(2),a22.round(2),a31.round(2),a32.round(2),a41.round(2),a42.round(2),a51.round(2),a52.round(2),a61.round(2),a62.round(2)]
 
+    height2 = [f21.round(2), f22.round(2), f31.round(2), f32.round(2), f41.round(2), f42.round(2), f51.round(2),
+              f52.round(2), f61.round(2), f62.round(2)]
 
     y_pos = np.arange(len(bars))
 
@@ -131,7 +133,40 @@ def classification_compare():
     # Show graphic
     plt.show()
 
+    y_pos = np.arange(len(bars))
+
+    # Create horizontal bars
+    plt.barh(y_pos, height2)
+
+    # Create names on the y-axis
+    plt.yticks(y_pos, bars)
+    plt.title('Classifiers f1-score Comparison: All features vs K best features')
+    # Show graphic
+    plt.show()
+
+#best models
+
+def hypertuning():
+    x_train=train_set.drop('bin',axis=1)
+    y_train=train_set['bin']
+    x_test=test_set.drop('bin',axis=1)
+    y_test=test_set['bin']
+
+    cols = select_k_best(2)
+    X = train_set.drop('bin', axis=1)
+    Y = test_set.drop('bin', axis=1)
+    x_train_s = X.iloc[:, cols]
+    x_test_s = Y.iloc[:, cols]
+
+
+    a42, f42 = NB(x_train_s, y_train, x_test_s, y_test)
+    print('Accuracy Score: NB classifier on selected features', a42, f42)
+
+    
 
 
 
-classification_compare()
+
+# classification_compare()
+
+hypertuning()
