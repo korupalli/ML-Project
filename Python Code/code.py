@@ -22,6 +22,7 @@ from sklearn.metrics import classification_report,confusion_matrix,accuracy_scor
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import GridSearchCV
 
 from featureSelection import f_values,chi2_test,correlate
 from vif import variance_inflation_factor
@@ -164,6 +165,7 @@ def hypertuning():
     a42, f42 = NB(x_train_s, y_train, x_test_s, y_test)
     print('Accuracy Score: NB classifier on selected features', a42, f42)
 
+<<<<<<< HEAD
 print(GaussianNB().get_params())
 print(RandomForestClassifier().get_params())
 
@@ -173,3 +175,102 @@ print(RandomForestClassifier().get_params())
 # classification_compare()
 
 # hypertuning()
+=======
+train_set=pd.read_csv('/content/drive/My Drive/Colab Notebooks/train.csv')
+test_set=pd.read_csv('/content/drive/My Drive/Colab Notebooks/test.csv')
+
+train_set.drop(['Unnamed: 0.1','Unnamed: 0'],axis=1,inplace=True)
+test_set.drop(['Unnamed: 0.1','Unnamed: 0'],axis=1,inplace=True)
+def hypertuning_Randomforest():
+    rf = RandomForestClassifier()
+    # Number of trees in random forest
+    n_estimators = [5, 50, 250]
+# Number of features to consider at every split
+    max_features = ['auto', 'sqrt','log2']
+# Maximum number of levels in tree
+    max_depth = [int(x) for x in np.linspace(2, 50, num = 10)]
+    max_depth.append(None)
+# Minimum number of samples required to split a node
+    min_samples_split = [2, 5, 10]
+# Minimum number of samples required at each leaf node
+    min_samples_leaf = [1, 2, 4]
+# Method of selecting samples for training each tree
+    bootstrap = [True, False]
+    criterion=['gini', 'entropy']
+    max_leaf_nodes=[int(x) for x in np.linspace(10, 110, num = 30)]
+    max_leaf_nodes.append(None)
+    class_weight=['balanced', 'balanced_subsample']
+    parameters = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split,
+               'min_samples_leaf': min_samples_leaf,
+               'bootstrap': bootstrap,
+               'criterion':criterion,
+               'max_leaf_nodes':max_leaf_nodes,
+               'class_weight':class_weight
+               }
+    Grid_cv = GridSearchCV(rf, parameters, cv=5)
+    features=['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg']
+    Grid_cv.fit(train_set[features], train_set.bin)
+    print(Grid_cv.best_params_)
+    best_random = Grid_cv.best_estimator_
+    random_accuracy = evaluate(best_random, test_set[features], test_set[bin])
+    print( "Accuracy of Best Parameter",random_accuracy)
+def evaluate(model, test_features, test_labels):
+    predictions = model.predict(test_features)
+    errors = abs(predictions - test_labels)
+    mape = 100 * np.mean(errors / test_labels)
+    accuracy = 100 - mape
+    print('Model Performance')
+    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
+    print('Accuracy = {:0.2f}%.'.format(accuracy))
+    
+    return accuracy
+def hypertuning_GradientBoosting():
+    rf = GradientBoostingClassifier()
+    loss=["deviance", 'exponential']
+    # Number of trees in random forest
+    n_estimators = [5, 50, 250, 500]
+# Number of features to consider at every split
+    max_features = ['auto', 'sqrt','log2']
+# Maximum number of levels in tree
+    max_depth = [int(x) for x in np.linspace(2, 50, num = 10)]
+    max_depth.append(None)
+# Minimum number of samples required to split a node
+    min_samples_split = [2, 5, 10]
+# Minimum number of samples required at each leaf node
+    min_samples_leaf = [1, 2, 4]
+# Method of selecting samples for training each tree
+    bootstrap = [True, False]
+    criterion=['friedman_mse', 'mse', 'mae']
+    max_leaf_nodes=[int(x) for x in np.linspace(10, 110, num = 30)]
+    max_leaf_nodes.append(None)
+    class_weight=['balanced', 'balanced_subsample']
+    parameters = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split,
+               'min_samples_leaf': min_samples_leaf,
+               'bootstrap': bootstrap,
+               'criterion':criterion,
+               'max_leaf_nodes':max_leaf_nodes,
+               'class_weight':class_weight
+               }
+    Grad_cv = GridSearchCV(rf, parameters, cv=5)
+    features=['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg']
+    Grad_cv.fit(train_set[features], train_set.bin)
+    print(Grad_cv.best_params_)
+    best_random = Grad_cv.best_estimator_
+    random_accuracy = evaluate(best_random, test_set[features], test_set[bin])
+    print( "Accuracy of Best Parameter",random_accuracy)
+
+# ['Favorites', 'Hashtags_count'] 2 naive bayes GaussianNB()
+# ['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg'] 12
+#classification_compare()
+
+#hypertuning()
+
+hypertuning_Randomforest()
+hypertuning_GradientBoosting()
+>>>>>>> 85cd45ae16c254d5094b81217332f8b073d7e357
