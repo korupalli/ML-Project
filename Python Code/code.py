@@ -168,7 +168,7 @@ def hypertuning():
 
 
 # ['Favorites', 'Hashtags_count'] 2 naive bayes GaussianNB()
-
+# ['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg'] 12
 classification_compare()
 
 hypertuning()
