@@ -52,19 +52,27 @@ def Mention_Hashtag_Freq(frame):
 	Hashtag = pd.Series(np.concatenate(arr)).value_counts()
 	
 	return Mention, Hashtag
-	
+
 def Preprocess(frame):
 	#Iniitial preprocessing 
-	frame = initial_preprocess(frame)
-	
-	mentions_count, Hashtags_count = Mention_Hashtag_Freq(frame)
-	
 	#selecting only retweets>10
 	frame.drop(frame.index[frame[frame['Retweets'] <= 10].index.values], inplace=True)
 	frame.reset_index(inplace=True)
+	frame.drop(frame.columns[[0]], axis = 1, inplace = True)
+	
+	#frame = initial_preprocess(frame)
+	
+	#mentions_count, Hashtags_count = Mention_Hashtag_Freq(frame)
+	mentions_count = pd.read_csv('/content/drive/My Drive/Colab Notebooks/Mentions_count.csv')
+	#entions_count.set_index('Unnamed: 0', inplace=True)
+	
+	Hashtags_count = pd.read_csv('/content/drive/My Drive/Colab Notebooks/Hashtags_count.csv')
+	Hashtags_count.set_index('Unnamed: 0', inplace=True)
+	
+	#frame.reset_index(inplace=True)
 	
 	#Dropping duplicated index columns
-	frame.drop(frame.columns[[0, 1]], axis = 1, inplace = True)
+	#frame.drop(frame.columns[[0, 1]], axis = 1, inplace = True)
 	
 	#Binning the retweet column and applying LabelEncoder
 	frame['bin'] = pd.cut(frame['Retweets'], [10, 50, 100, 1000, 10000, 275530])
@@ -76,26 +84,36 @@ def Preprocess(frame):
 	
 	X = pd.concat([X_train, y_train], axis=1)
 	
+	counts = y_train.value_counts().values
+	
 	#Reducing size of dataset
 	X_ = pd.concat([X[X['bin'] == 0].sample(min(int(counts[0]/100), counts[0])), X[X['bin'] == 1].sample(min(int(counts[0]/100), counts[1])),X[X['bin'] == 2].sample(min(int(counts[0]/100), counts[2])),X[X['bin'] == 3].sample(min(int(counts[0]/100), counts[3])), X[X['bin'] == 4].sample(min(int(counts[0]/100), counts[4]))], axis=0)
 	
 	mentions_count.set_index('Unnamed: 0', inplace=True)
 	Hashtags_count.set_index('Unnamed: 0', inplace=True)
 
-	def funct(string):
-	  if string == 0:
-		return 0
-	  final = 0
-	  for i in string.split():
-		final += mentions_count.loc[i].values[0]
-	  return final
+	def funct1(string):
+		if string == 0:
+			return 0
+		final = 0
+		for i in string.split():
+			final += mentions_count.loc[i].values[0]
+		return final
+		
+	def funct2(string):
+		if string == 0:
+			return 0
+		final = 0
+		for i in string.split():
+			final += mentions_count.loc[i].values[0]
+		return final
 
 	test = pd.concat([X_test, y_test], axis=1)
 	
-	X_['Mentions_score'] = X_['Mentions'].apply(funct)
-	X_['Hashtags_score'] = X_['Hashtags'].apply(funct)
-	test['Mentions_score'] = test['Mentions'].apply(funct)
-	test['Hashtags_score'] = test['Hashtags'].apply(funct)
+	X_['Mentions_score'] = X_['Mentions'].apply(funct1)
+	X_['Hashtags_score'] = X_['Hashtags'].apply(funct2)
+	test['Mentions_score'] = test['Mentions'].apply(funct1)
+	test['Hashtags_score'] = test['Hashtags'].apply(funct2)
 	
 	X_['Mentions_score_avg'] = X_['Mentions_score']/X_['Mentions_count']
 	X_.Mentions_score_avg.replace(np.NaN,0,inplace=True)
@@ -142,6 +160,9 @@ def Undersampling(frame):
 	X = pd.concat([X_train, y_train], axis=1)
 	
 	print('Reducing each class to 10% by maintaing the same ratios and reducing the overall size of dataset to its 10%')
+	
+	X_ = pd.concat([X[X['bin'] == 0].sample(int(0.1 * counts[0])), X[X['bin'] == 1].sample(int(0.1 * counts[1])), X[X['bin'] == 2].sample(int(0.1 * counts[2])), X[X['bin'] == 3].sample(int(0.1 * counts[3])), X[X['bin'] == 4].sample(int(0.1 * counts[4]))], axis=0)
+	
 	y_train = X_.bin
 	X_train = X_.drop(['bin'], axis=1)
 	
@@ -166,3 +187,4 @@ def Undersampling(frame):
 	rfc_pred = rfc.predict(X_test)
 	print('Accuracy score f1_score recall_score', accuracy_score(y_test, rfc_pred), f1_score(y_test, rfc_pred, average = 'macro'), recall_score(y_test, rfc_pred, average = 'macro'))
 	
+	return
