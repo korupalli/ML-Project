@@ -165,22 +165,7 @@ def hypertuning():
     a42, f42 = NB(x_train_s, y_train, x_test_s, y_test)
     print('Accuracy Score: NB classifier on selected features', a42, f42)
 
-<<<<<<< HEAD
-print(GaussianNB().get_params())
-print(RandomForestClassifier().get_params())
 
-
-# ['Favorites', 'Hashtags_count'] 2 naive bayes GaussianNB()
-# ['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg'] 12
-# classification_compare()
-
-# hypertuning()
-=======
-train_set=pd.read_csv('/content/drive/My Drive/Colab Notebooks/train.csv')
-test_set=pd.read_csv('/content/drive/My Drive/Colab Notebooks/test.csv')
-
-train_set.drop(['Unnamed: 0.1','Unnamed: 0'],axis=1,inplace=True)
-test_set.drop(['Unnamed: 0.1','Unnamed: 0'],axis=1,inplace=True)
 def hypertuning_Randomforest():
     rf = RandomForestClassifier()
     # Number of trees in random forest
@@ -244,18 +229,18 @@ def hypertuning_GradientBoosting():
 # Method of selecting samples for training each tree
     bootstrap = [True, False]
     criterion=['friedman_mse', 'mse', 'mae']
-    max_leaf_nodes=[int(x) for x in np.linspace(10, 110, num = 30)]
-    max_leaf_nodes.append(None)
+    
+    
     class_weight=['balanced', 'balanced_subsample']
     parameters = {'n_estimators': n_estimators,
                'max_features': max_features,
                'max_depth': max_depth,
                'min_samples_split': min_samples_split,
                'min_samples_leaf': min_samples_leaf,
-               'bootstrap': bootstrap,
-               'criterion':criterion,
-               'max_leaf_nodes':max_leaf_nodes,
-               'class_weight':class_weight
+               
+               'criterion':criterion
+              
+             
                }
     Grad_cv = GridSearchCV(rf, parameters, cv=5)
     features=['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg']
@@ -273,4 +258,4 @@ def hypertuning_GradientBoosting():
 
 hypertuning_Randomforest()
 hypertuning_GradientBoosting()
->>>>>>> 85cd45ae16c254d5094b81217332f8b073d7e357
+
