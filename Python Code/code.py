@@ -20,6 +20,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report,confusion_matrix,accuracy_score,recall_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import GradientBoostingClassifier
 
 from featureSelection import f_values,chi2_test,correlate
 from vif import variance_inflation_factor
@@ -162,11 +164,11 @@ def hypertuning():
     a42, f42 = NB(x_train_s, y_train, x_test_s, y_test)
     print('Accuracy Score: NB classifier on selected features', a42, f42)
 
-    
 
 
 
+# ['Favorites', 'Hashtags_count'] 2 naive bayes GaussianNB()
 
-# classification_compare()
+classification_compare()
 
 hypertuning()
