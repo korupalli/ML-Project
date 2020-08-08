@@ -164,11 +164,12 @@ def hypertuning():
     a42, f42 = NB(x_train_s, y_train, x_test_s, y_test)
     print('Accuracy Score: NB classifier on selected features', a42, f42)
 
-
+print(GaussianNB().get_params())
+print(RandomForestClassifier().get_params())
 
 
 # ['Favorites', 'Hashtags_count'] 2 naive bayes GaussianNB()
 # ['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg'] 12
-classification_compare()
+# classification_compare()
 
-hypertuning()
+# hypertuning()
