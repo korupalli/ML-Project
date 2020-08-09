@@ -1,6 +1,6 @@
 # ML-Project
 
-# Requirements: 
+Requirements: 
 
 scikit-image	0.17.2	
 scikit-learn	0.23.1	
