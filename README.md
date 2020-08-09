@@ -22,4 +22,17 @@ Execution Instructions:
 - Run Parent.py which outputs results of Chi-square tests and P-values and Anova f-measure and Kendall coefficient results and runs hypertuning on 3 classifiers prints scores on     test set and classification report for ensemble model
   Preprocessing code is commented in Parent.py file to save time. Uncommenting will run code on main dataset.
 
+Python files information:
+HyperTuning.py - Contains gridsearch analysis and ensemble model
 
+Parent.py - Main file which imports from all other files and outputs
+
+Preprocessor.py - Contains code for preprocessing and undersampling
+
+algoSelection.py - Comparion of algorithms
+
+classifiers.py - returns the accuracy and f1_score of each classifier
+
+featureSelection.py - method which are used for feature_selection
+
+vif.py - Contains code for varience inflation factor
