@@ -10,8 +10,8 @@ frame.columns = ['Tweet Id', 'Username', 'Timestamp', 'Followers', 'Friends', 'R
 train, test = Preprocessor.Preprocess(frame)
 
 #Processed data
-Processed_frame = pd.read_csv('/content/drive/My Drive/Colab Notebooks/data.csv')
-Preprocessor.Undersampling(frame)
+Processed_frame = pd.read_csv('data.csv')
+Preprocessor.Undersampling(Processed_frame)
 '''
 #############################################################################################
 train_set=pd.read_csv('train.csv')
