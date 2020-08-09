@@ -26,20 +26,20 @@ def Hyper_Tuning(train, test):
 	y_test = test.bin
 	X_test = test[features]
 	#For gradient boosting
-	'''
+
 	param_test2 = {'learning_rate':[0.1,0.15]#,'n_estimators':range(20,100,20),
                #'max_features':range(2,5),
                #'max_depth':range(4,12,2), 'min_samples_split':range(40,70,10),'min_samples_leaf':range(10,20,2)
-              }  
-	gsearch2 = GridSearchCV(estimator = GradientBoostingClassifier(learning_rate=0.1,n_estimators=100,max_features=3,min_samples_split=15,min_samples_leaf=7,max_depth=4,subsample=0.8,random_state=10), 
+              }
+	gsearch2 = GridSearchCV(estimator = GradientBoostingClassifier(learning_rate=0.1,n_estimators=100,max_features=3,min_samples_split=15,min_samples_leaf=7,max_depth=4,subsample=0.8,random_state=10),
 	param_grid = param_test2, scoring='accuracy',n_jobs=4, cv=3)
 	gsearch2.fit(X_train[features],y_train)
-	
+
 	print('Gradient Boosting')
 	print('Grid Search Result - ')
-	
+
 	print(gsearch2.best_params_, gsearch2.best_score_, '\n')
-	'''
+
 	print('Test set result')
 	GB = GradientBoostingClassifier(learning_rate=0.1,n_estimators=100,max_features=3,min_samples_split=50,min_samples_leaf=7,max_depth=5,subsample=0.8,random_state=10).fit(X_train, y_train)
 	GB_pred = GB.predict(X_test)
@@ -54,16 +54,16 @@ def Hyper_Tuning(train, test):
 	print('Test set result')
 	print('Accuracy    F1_score    Recall')
 	print(accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average = 'macro'), recall_score(y_test, y_pred, average = 'macro'),'\n')
-	'''
+
 	#Randon Forest classifier
-	parameters = {'max_depth':range(7,15,2)}#,'n_estimators':range(200,220,5),'max_features':[4], 'criterion':['gini','entropy'],'class_weight':['balanced'],'min_samples_split':range(2,5)}
+	parameters = {'max_depth':range(13,15,2)}#,'n_estimators':range(200,220,5),'max_features':[4], 'criterion':['gini','entropy'],'class_weight':['balanced'],'min_samples_split':range(2,5)}
 	Grid_cv = GridSearchCV(RandomForestClassifier(n_estimators=215,max_features=4,max_depth=13,criterion='entropy',min_samples_split=3,n_jobs=2), parameters,scoring='accuracy', cv=3)
 	Grid_cv.fit(X_train[features],y_train)
 	
 	print('Random Forest')
 	print('Random Forest result - ')
 	print(Grid_cv.best_params_, Grid_cv.best_score_,'\n')
-	'''
+
 	rfc = RandomForestClassifier(n_estimators=215,max_features=4,max_depth=13,criterion='entropy',min_samples_split=3,n_jobs=2).fit(X_train, y_train)
 	rfc_pred = rfc.predict(X_test)
 	print('Accuracy    F1_score    Recall')
