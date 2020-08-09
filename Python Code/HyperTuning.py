@@ -56,7 +56,7 @@ def Hyper_Tuning(train, test):
 	print(accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average = 'macro'), recall_score(y_test, y_pred, average = 'macro'),'\n')
 
 	#Randon Forest classifier
-	parameters = {'max_depth':range(13,15,2)}#,'n_estimators':range(200,220,5),'max_features':[4], 'criterion':['gini','entropy'],'class_weight':['balanced'],'min_samples_split':range(2,5)}
+	parameters = {'max_depth':range(7,15,2)}#,'n_estimators':range(200,220,5),'max_features':[4], 'criterion':['gini','entropy'],'class_weight':['balanced'],'min_samples_split':range(2,5)}
 	Grid_cv = GridSearchCV(RandomForestClassifier(n_estimators=215,max_features=4,max_depth=13,criterion='entropy',min_samples_split=3,n_jobs=2), parameters,scoring='accuracy', cv=3)
 	Grid_cv.fit(X_train[features],y_train)
 	
