@@ -1,6 +1,6 @@
 # ML-Project
 
-Requirements: 
+# Requirements: 
 
 scikit-image	0.17.2	
 scikit-learn	0.23.1	
@@ -14,6 +14,7 @@ Jinja2	2.11.2
 matplotlib	3.2.1	
 numpy	1.18.4	
 pandas	1.0.3	
+
 
 
 
