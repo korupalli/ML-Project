@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-rom sklearn import preprocessing
+from sklearn import preprocessing
 from sklearn.metrics import classification_report,confusion_matrix,accuracy_score,recall_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB

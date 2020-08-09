@@ -1,32 +1,8 @@
 import pandas as pd, numpy as np, os, gc, matplotlib.pyplot as plt, seaborn as sb, re, warnings, calendar, sys
-from copy import deepcopy
-import statsmodels.api as sm
-from math import log2
-from collections import defaultdict
 import seaborn as sns; sns.set()
-from sklearn.metrics import classification_report,confusion_matrix,accuracy_score,recall_score,f1_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import AdaBoostClassifier
-
 from featureSelection import f_values,chi2_test,correlate
 from vif import variance_inflation_factor
-
 from classifiers import KNN,random_forest,DT,NB,gradientBoost,MLP,LR,ADB
-
-import sys
-
-train_set=pd.read_csv('train.csv')
-test_set=pd.read_csv('test.csv')
-
-train_set.drop(['Tweet Id'],axis=1,inplace=True)
-test_set.drop(['Tweet Id'],axis=1,inplace=True)
-
-# print(len(train_set.columns))
-# print(test_set.columns)
-
 
 # Feature Selection
 # chi-square scores and p-values.
@@ -35,7 +11,7 @@ def chi_square(train_set):
     chi_scores,p_values=chi2_test(x_train,'bin')
 
 #SelectKbest features based on f-values.
-def select_k_best(n_features):
+def select_k_best(train_set,n_features):
     f_score,k_best_columns,selected_col=f_values(train_set,n_features,'bin')
     # print(selected_col,len(selected_col))
     return k_best_columns
@@ -52,7 +28,7 @@ def classification_compare(train_set,test_set):
     x_test=test_set.drop('bin',axis=1)
     y_test=test_set['bin']
 
-    cols = select_k_best(12)
+    cols = select_k_best(train_set,12)
     X = train_set.drop('bin', axis=1)
     Y = test_set.drop('bin', axis=1)
     x_train_s = X.iloc[:, cols]
@@ -124,3 +100,4 @@ def classification_compare(train_set,test_set):
     plt.title('Classifiers f1-score Comparison: All features vs K best features')
     # Show graphic
     plt.show()
+
