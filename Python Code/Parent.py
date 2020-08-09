@@ -21,11 +21,11 @@ train_set.drop(['Tweet Id'],axis=1,inplace=True)
 test_set.drop(['Tweet Id'],axis=1,inplace=True)
 
 #feature selection
-# chi_square(train_set)
-# correlation(train_set)
+chi_square(train_set)
+correlation(train_set)
 
 #algo selection
-# classification_compare(train_set,test_set)
+classification_compare(train_set,test_set)
 
 #hyper-tuning and prediction
 Hyper_Tuning(train_set, test_set)
