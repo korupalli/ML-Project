@@ -60,7 +60,7 @@ def Preprocess(frame):
 	frame.reset_index(inplace=True)
 	frame.drop(frame.columns[[0]], axis = 1, inplace = True)
 	
-	#frame = initial_preprocess(frame)
+	frame = initial_preprocess(frame)
 	
 	#mentions_count, Hashtags_count = Mention_Hashtag_Freq(frame)
 	mentions_count = pd.read_csv('/content/drive/My Drive/Colab Notebooks/Mentions_count.csv')
@@ -68,8 +68,6 @@ def Preprocess(frame):
 	
 	Hashtags_count = pd.read_csv('/content/drive/My Drive/Colab Notebooks/Hashtags_count.csv')
 	Hashtags_count.set_index('Unnamed: 0', inplace=True)
-	
-	#frame.reset_index(inplace=True)
 	
 	#Dropping duplicated index columns
 	#frame.drop(frame.columns[[0, 1]], axis = 1, inplace = True)
@@ -188,3 +186,4 @@ def Undersampling(frame):
 	print('Accuracy score f1_score recall_score', accuracy_score(y_test, rfc_pred), f1_score(y_test, rfc_pred, average = 'macro'), recall_score(y_test, rfc_pred, average = 'macro'))
 	
 	return
+	
