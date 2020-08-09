@@ -1,20 +1,79 @@
-def gen_meta_features(training_df, nb_0, nb_1, nb_2, svm_0, svm_1, svm_2):
-    dfs = []
-    df1 = training_df
-    
-    for i in range(5):
-        condition = training_df['group'] == i
-        c_train = training_df.filter(~condition).cache()
-        c_test = training_df.filter(condition).cache()
-        
-        for j in [nb_0, nb_1, nb_2, svm_0, svm_1, svm_2]:
-            lr_model = nb_0.fit(c_train)
-            lr_pred = lr_model.transform(c_test)
-            dfs.append(lr_pred)
+import pandas as pd
+import numpy as np
+rom sklearn import preprocessing
+from sklearn.metrics import classification_report,confusion_matrix,accuracy_score,recall_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, recall_score
 
-    for i in range(6):
-        df2 = dfs[i].unionAll(dfs[i+1]).unionAll(dfs[i+2]).unionAll(dfs[i+3]).unionAll(dfs[i+4]).select(['id','features','label','group','label_0','label_1','label_2','nb_pred_0'])
-        print(df1.count())
-        df1 = df1.join(df2, ['id','features','label','group','label_0','label_1','label_2']).count()
-    
-    return df1
+def ensembler(gb, nb, rfc):
+	for i in range(len(gn)):
+		if gb[i]== nb[i] or gb[i] == rfc[i]:
+			nb[i] = gb[i]
+		elif nb[i] == rfc[i]:
+			continue
+		else:
+			nb[i] = gb[i]
+	return nb
+
+
+def Hyper_Tuning(train, test):
+	features=['Followers', 'Friends', 'Favorites', 'Month', 'Date', 'Neg', 'Mentions_count', 'Hashtags_count', 'Mentions_score', 'Hashtags_score', 'Mentions_score_avg', 'Hashtags_score_avg']
+
+	y_train = train.bin
+	X_train = train.drop(['bin'], axis=1)
+	y_test = test.bin
+	X_test = test.drop(['bin'], axis=1)
+
+	#For gradient boosting
+	param_test2 = {'learning_rate':[0.1,0.15],'n_estimators':range(20,100,20),
+               'max_features':range(2,5),
+               'max_depth':range(4,12,2)
+               'min_samples_split':range(40,70,10),'min_samples_leaf':range(10,20,2)
+              }  
+	gsearch2 = GridSearchCV(estimator = GradientBoostingClassifier(learning_rate=0.1,n_estimators=100,max_features=3,min_samples_split=15,min_samples_leaf=7,max_depth=4,subsample=0.8,random_state=10), 
+	param_grid = param_test2, scoring='accuracy',n_jobs=4, cv=3)
+	gsearch2.fit(X_train[features],y_train)
+	
+	print('Gradient Boosting')
+	print('Grid Search Result - ')
+	print(gsearch2.best_params_, gsearch2.best_score_, '\n')
+	print('Test set result')
+	GB = GradientBoostingClassifier(learning_rate=0.1,n_estimators=100,max_features=3,min_samples_split=50,min_samples_leaf=7,max_depth=5,subsample=0.8,random_state=10).fit(X_train, y_train)
+	GB_pred = GB.predict(X_test)
+	print(accuracy_score(y_test, GB_pred), f1_score(y_test, GB_pred, average = 'macro'), recall_score(y_test, GB_pred, average = 'macro'))
+	
+	#Naive Bayes
+	clf = GaussianNB()
+    clf.fit(x_train[['Favorites', 'Hashtags_count']], y_train)
+    y_pred = clf.predict(x_test)
+	print('Naive Bayes')
+	Print('Test set result')
+	print(accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average = 'macro'), recall_score(y_test, y_pred, average = 'macro'))
+	
+	#Randon Forest classifier
+	parameters = {
+    'max_depth':range(7,15,2),    
+    'n_estimators':range(200,220,5),
+    'max_features':[4],
+    'criterion':['gini','entropy'],
+    'class_weight':['balanced'],
+    'min_samples_split':range(2,5), 
+     }
+    Grid_cv = GridSearchCV(rf, parameters,scoring='accuracy', cv=3)
+    Grid_cv.fit(X_train[features],y_train)
+	
+	print('Random Forest')
+	print('Random Forest result - ')
+    print(Grid_cv.cv_results_, Grid_cv.best_params_, Grid_cv.best_score_,'\n')
+	rfc = RandomForestClassifier(n_estimators=215,max_features=4,max_depth=13,criterion='entropy',min_samples_split=3,n_jobs=2).fit(X_train, y_train)
+    rfc_pred = rfc.predict(X_test)
+    print(accuracy_score(y_test, rfc_pred), f1_score(y_test, rfc_pred, average = 'macro'), recall_score(y_test, rfc_pred, average = 'macro'))
+	
+	ensemble_pred = ensembler(GB_pred, y_pred, rfc_pred)
+	print('Ensemble Model')
+	print(accuracy_score(y_test, ensemble_pred), f1_score(y_test, ensemble_pred, average = 'macro'), recall_score(y_test, ensemble_pred, average = 'macro'))
+	
+	return None
