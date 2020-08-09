@@ -70,8 +70,8 @@ def Hyper_Tuning(train, test):
 	print(accuracy_score(y_test, rfc_pred), f1_score(y_test, rfc_pred, average = 'macro'), recall_score(y_test, rfc_pred, average = 'macro'),'\n')
 	
 	ensemble_pred = ensembler(GB_pred, y_pred, rfc_pred)
-	print('Ensemble Model')
-	print('Accuracy    F1_score    Recall')
+	print('Ensemble Model: Random Forest, Naive Bayes, Gradient Boost')
+	print('Accuracy    			F1_score    		Recall')
 	print(accuracy_score(y_test, ensemble_pred), f1_score(y_test, ensemble_pred, average = 'macro'), recall_score(y_test, ensemble_pred, average = 'macro'))
 	target_names = ['class 0', 'class 1', 'class 2', 'class 3', 'class 4']
 	print(classification_report(y_test, ensemble_pred, target_names=target_names))
