@@ -1,4 +1,4 @@
-# ML-Project
+# Retweet Prediction
 
 Requirements: 
 
